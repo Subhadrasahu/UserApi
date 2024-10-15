@@ -1,0 +1,637 @@
+{
+	"info": {
+		"_postman_id": "7b800ea1-3fa1-4ccd-b8aa-8feec0f4b58c",
+		"name": "API BootCamp",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20113690",
+		"_collection_link": "https://cloudy-resonance-927720.postman.co/workspace/99f2ceba-fe7a-4d6e-841c-2aa32f9509d9/collection/20113690-7b800ea1-3fa1-4ccd-b8aa-8feec0f4b58c?action=share&source=collection_link&creator=20113690"
+	},
+	"item": [
+		{
+			"name": "UserController",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "userapi@october",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"user_first_name\":\"Rekha\",\r\n \"user_last_name\":\"Subi\",        \r\n \"user_contact_number\":1234564460,  \r\n \"user_email_id\":\"subha123@gmail.com\",\r\n\r\n\"userAddress\": {\r\n   \"plotNumber\":\"pl-03\",\r\n   \"street\":\"Broadway\",\r\n   \"state\":\"Broadway\",\r\n    \"country\":\"USA\",\r\n   \"zipCode\":143422\r\n }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/createusers",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"createusers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "PUT Request",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "userapi@october",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"user_first_name\":\"Rekha\",\r\n \"user_last_name\":\"Subi\",        \r\n \"user_contact_number\":1423567890,  \r\n \"user_email_id\":\"subh1234@gmail.com\",\r\n\r\n\"userAddress\": {\r\n   \"plotNumber\":\"pl-03\",\r\n   \"street\":\"Broadway\",\r\n   \"state\":\"Broadway\",\r\n    \"country\":\"USA\",\r\n   \"zipCode\":143422\r\n }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/updateuser/9099",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"updateuser",
+						"9099"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllRequest",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Fixed syntax and added property checks for userAddress and user_id\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"const users = pm.response.json();\r",
+							"pm.test(\"User found\",()=> {\r",
+							"    pm.expect(users).to.be.an('array');\r",
+							"    pm.expect(users[0]).to.have.property('userAddress');\r",
+							"    pm.expect(users[0]).to.have.property('user_id');\r",
+							"    pm.expect(users[0]).to.have.property('user_first_name');\r",
+							"    pm.expect(users[0]).to.have.property('user_last_name');\r",
+							"});\r",
+							"pm.test(\"Response time is less than 1000ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+							"});\r",
+							"pm.test(\"Validate the userAddress object properties\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData).to.be.an('array').that.is.not.empty;\r",
+							"    responseData.forEach(function(user) {\r",
+							"        pm.expect(user.userAddress).to.be.an('object');\r",
+							"        pm.expect(user.userAddress.addressId).to.exist.and.to.be.a('number');\r",
+							"        pm.expect(user.userAddress.plotNumber).to.exist.and.to.be.a('string');\r",
+							"        pm.expect(user.userAddress.street).to.exist.and.to.be.a('string');\r",
+							"        pm.expect(user.userAddress.state).to.exist.and.to.be.a('string');\r",
+							"        pm.expect(user.userAddress.country).to.exist.and.to.be.a('string');\r",
+							"        pm.expect(user.userAddress.zipCode).to.exist.and.to.be.a('number');\r",
+							"    });\r",
+							"});\r",
+							"pm.test(\"User_id is a non-negative integer\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    responseData.forEach(function(user) {\r",
+							"        pm.expect(user.user_id).to.be.a('number').and.to.be.at.least(0);\r",
+							"    });\r",
+							"});\r",
+							"pm.test(\"User email format is valid\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(function(user) {\r",
+							"        pm.expect(user.user_email_id).to.be.a('string').and.to.match(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/, \"Email format is not valid\");\r",
+							"    });\r",
+							"});\r",
+							"pm.test(\"Creation_time and last_mod_time are in valid date-time format\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    responseData.forEach(function(user) {\r",
+							"        pm.expect(user.creation_time).to.match(/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$/);\r",
+							"        pm.expect(user.last_mod_time).to.match(/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z$/);\r",
+							"    });\r",
+							"});\r",
+							"pm.test(\"Content-Type header is application/json\", function () {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"User address object properties are valid\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(function(user) {\r",
+							"        pm.expect(user).to.have.property('userAddress').that.is.an('object');\r",
+							"        pm.expect(user.userAddress).to.have.property('addressId').that.is.a('number');\r",
+							"        pm.expect(user.userAddress).to.have.property('plotNumber').that.is.a('string');\r",
+							"        pm.expect(user.userAddress).to.have.property('street').that.is.a('string');\r",
+							"        pm.expect(user.userAddress).to.have.property('state').that.is.a('string');\r",
+							"        pm.expect(user.userAddress).to.have.property('country').that.is.a('string');\r",
+							"        pm.expect(user.userAddress).to.have.property('zipCode').that.is.a('number');\r",
+							"    });\r",
+							"});\r",
+							"pm.test(\"User_id is a non-negative integer\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    responseData.forEach(function(user) {\r",
+							"        pm.expect(user.user_id).to.be.a('number').and.to.be.at.least(0);\r",
+							"    });\r",
+							"});\r",
+							"pm.test(\"User object has all the required properties\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(function(user) {\r",
+							"        pm.expect(user).to.have.property('userAddress').that.is.an('object');\r",
+							"        pm.expect(user).to.have.property('user_id').that.is.a('number');\r",
+							"        pm.expect(user).to.have.property('user_first_name').that.is.a('string');\r",
+							"        pm.expect(user).to.have.property('user_last_name').that.is.a('string');\r",
+							"        pm.expect(user).to.have.property('user_contact_number').that.is.a('number');\r",
+							"        pm.expect(user).to.have.property('user_email_id').that.is.a('string');\r",
+							"        pm.expect(user).to.have.property('creation_time').that.is.a('string');\r",
+							"        pm.expect(user).to.have.property('last_mod_time').that.is.a('string');\r",
+							"    });\r",
+							"});\r",
+							"pm.test(\"User contact number is a valid format\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(function(user) {\r",
+							"        pm.expect(user.user_contact_number).to.be.a('number');\r",
+							"    });\r",
+							"});\r",
+							"pm.test(\"Creation time and last modification time are in ISO 8601 format\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    responseData.forEach(function(user) {\r",
+							"        pm.expect(user.creation_time).to.match(/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{3}Z$/, \"Creation time should be in ISO 8601 format\");\r",
+							"        pm.expect(user.last_mod_time).to.match(/^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}.\\d{3}Z$/, \"Last modification time should be in ISO 8601 format\");\r",
+							"    });\r",
+							"});\r",
+							"pm.test(\"User address object is present and contains expected properties\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(function(user) {\r",
+							"        pm.expect(user.userAddress).to.exist;\r",
+							"        pm.expect(user.userAddress).to.have.property('addressId');\r",
+							"        pm.expect(user.userAddress).to.have.property('plotNumber');\r",
+							"        pm.expect(user.userAddress).to.have.property('street');\r",
+							"        pm.expect(user.userAddress).to.have.property('state');\r",
+							"        pm.expect(user.userAddress).to.have.property('country');\r",
+							"        pm.expect(user.userAddress).to.have.property('zipCode');\r",
+							"    });\r",
+							"});\r",
+							"pm.test(\"Verify user_email_id is a non-empty string and in a valid email format\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData).to.be.an('array').that.is.not.empty;\r",
+							"    responseData.forEach(function(user) {\r",
+							"        pm.expect(user.user_email_id).to.be.a('string').and.to.have.lengthOf.at.least(1, \"user_email_id should not be empty\");\r",
+							"        pm.expect(user.user_email_id).to.match(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/, \"user_email_id should be in a valid email format\");\r",
+							"    });\r",
+							"});\r",
+							"pm.test(\"User first name and last name should be non-empty strings\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(user => {\r",
+							"        pm.expect(user.user_first_name).to.be.a('string').and.to.have.lengthOf.at.least(1, \"User first name should not be empty\");\r",
+							"        pm.expect(user.user_last_name).to.be.a('string').and.to.have.lengthOf.at.least(1, \"User last name should not be empty\");\r",
+							"    });\r",
+							"});\r",
+							"pm.test(\"User_contact_number is a valid phone number format\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(function(user) {\r",
+							"        pm.expect(user.user_contact_number).to.match(/^\\d{10}$/); // Assuming a valid phone number format is 10 digits\r",
+							"    });\r",
+							"});\r",
+							"pm.test(\"Verify creation_time and last_mod_time are in UTC timezone\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    responseData.forEach(function(user) {\r",
+							"        pm.expect(user.creation_time).to.match(/^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z)$/);\r",
+							"        pm.expect(user.last_mod_time).to.match(/^(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}Z)$/);\r",
+							"    });\r",
+							"});\r",
+							"pm.test(\"User address object contains all required properties\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(function(user) {\r",
+							"        pm.expect(user.userAddress).to.be.an('object');\r",
+							"        pm.expect(user.userAddress.addressId).to.exist;\r",
+							"        pm.expect(user.userAddress.plotNumber).to.exist;\r",
+							"        pm.expect(user.userAddress.street).to.exist;\r",
+							"        pm.expect(user.userAddress.state).to.exist;\r",
+							"        pm.expect(user.userAddress.country).to.exist;\r",
+							"        pm.expect(user.userAddress.zipCode).to.exist;\r",
+							"    });\r",
+							"});\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"pm.test(\"Verify that the response is an array of user objects\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(function(user) {\r",
+							"        pm.expect(user).to.be.an('object');\r",
+							"    });\r",
+							"});\r",
+							"pm.test(\"User_id, user_contact_number, and user_email_id have correct data types\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    responseData.forEach(function(user) {\r",
+							"        pm.expect(user.user_id).to.be.a('number');\r",
+							"        pm.expect(user.user_contact_number).to.be.a('number');\r",
+							"        pm.expect(user.user_email_id).to.be.a('string');\r",
+							"    });\r",
+							"});\r",
+							"pm.test(\"Verify that creation_time and last_mod_time are not in the future\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    responseData.forEach(function(user) {\r",
+							"        pm.expect(user.creation_time).to.be.at.most(new Date().toISOString(), \"Creation time should not be in the future\");\r",
+							"        pm.expect(user.last_mod_time).to.be.at.most(new Date().toISOString(), \"Last modification time should not be in the future\");\r",
+							"    });\r",
+							"});\r",
+							"pm.test(\"Presence of specific properties in userAddress object\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(function(user) {\r",
+							"        pm.expect(user.userAddress).to.be.an('object');\r",
+							"        pm.expect(user.userAddress).to.have.property('plotNumber');\r",
+							"        pm.expect(user.userAddress).to.have.property('street');\r",
+							"        pm.expect(user.userAddress).to.have.property('zipCode');\r",
+							"    });\r",
+							"});\r",
+							"pm.test(\"Verify that the response contains at least one user object\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData).to.be.an('array').that.is.not.empty;\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Verify that the response is an array of user objects\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(function(user) {\r",
+							"        pm.expect(user).to.be.an('object');\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"User_id, user_contact_number, and user_email_id have correct data types\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('array').that.is.not.empty;\r",
+							"    \r",
+							"    responseData.forEach(function(user) {\r",
+							"        pm.expect(user.user_id).to.be.a('number');\r",
+							"        pm.expect(user.user_contact_number).to.be.a('number');\r",
+							"        pm.expect(user.user_email_id).to.be.a('string');\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Verify creation_time and last_mod_time are not in the future\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    \r",
+							"    responseData.forEach(function(user) {\r",
+							"        pm.expect(user.creation_time).to.be.at.most(new Date().toISOString(), \"creation_time should not be in the future\");\r",
+							"        pm.expect(user.last_mod_time).to.be.at.most(new Date().toISOString(), \"last_mod_time should not be in the future\");\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Presence of specific properties in userAddress object\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    \r",
+							"    responseData.forEach(function(user) {\r",
+							"        pm.expect(user.userAddress).to.exist;\r",
+							"        pm.expect(user.userAddress).to.have.property('addressId');\r",
+							"        pm.expect(user.userAddress).to.have.property('plotNumber');\r",
+							"        pm.expect(user.userAddress).to.have.property('street');\r",
+							"        pm.expect(user.userAddress).to.have.property('state');\r",
+							"        pm.expect(user.userAddress).to.have.property('country');\r",
+							"        pm.expect(user.userAddress).to.have.property('zipCode');\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Verify that the response contains at least one user object\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('array').that.is.not.empty;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Verify that the response is an array of user objects\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('array');\r",
+							"    responseData.forEach(function(user) {\r",
+							"        pm.expect(user).to.be.an('object');\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"User_id, user_contact_number, and user_email_id have correct data types\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    responseData.forEach(user => {\r",
+							"        pm.expect(user.user_id).to.be.a('number');\r",
+							"        pm.expect(user.user_contact_number).to.be.a('number');\r",
+							"        pm.expect(user.user_email_id).to.be.a('string');\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Verify creation_time and last_mod_time are not in the future\", function () {\r",
+							"  const responseData = pm.response.json();\r",
+							"  \r",
+							"  responseData.forEach(function(user) {\r",
+							"    pm.expect(new Date(user.creation_time)).to.be.at.most(new Date(), \"Creation time should not be in the future\");\r",
+							"    pm.expect(new Date(user.last_mod_time)).to.be.at.most(new Date(), \"Last modification time should not be in the future\");\r",
+							"  });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Presence of specific properties in userAddress object\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('array').that.is.not.empty;\r",
+							"\r",
+							"    responseData.forEach(function(user) {\r",
+							"        pm.expect(user.userAddress).to.be.an('object');\r",
+							"        pm.expect(user.userAddress).to.have.property('addressId');\r",
+							"        pm.expect(user.userAddress).to.have.property('plotNumber');\r",
+							"        pm.expect(user.userAddress).to.have.property('street');\r",
+							"        pm.expect(user.userAddress).to.have.property('state');\r",
+							"        pm.expect(user.userAddress).to.have.property('country');\r",
+							"        pm.expect(user.userAddress).to.have.property('zipCode');\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Verify that the response contains at least one user object\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('array').that.is.not.empty;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Verify that the response is an array of user objects\", function () {\r",
+							"  const responseData = pm.response.json();\r",
+							"  \r",
+							"  pm.expect(responseData).to.be.an('array');\r",
+							"  responseData.forEach(function(user) {\r",
+							"    pm.expect(user).to.be.an('object');\r",
+							"  });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Verify that the response contains at least one user object\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('array').that.is.not.empty;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"User_id, user_contact_number, and user_email_id have correct data types\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    responseData.forEach(function(user) {\r",
+							"        pm.expect(user.user_id).to.be.a('number');\r",
+							"        pm.expect(user.user_contact_number).to.be.a('number');\r",
+							"        pm.expect(user.user_email_id).to.be.a('string');\r",
+							"    });\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Creation time and last modification time are not in the future\", function () {\r",
+							"  const responseData = pm.response.json();\r",
+							"  \r",
+							"  responseData.forEach(user => {\r",
+							"    pm.expect(user.creation_time).to.be.at.most(new Date().toISOString(), \"Creation time should not be in the future\");\r",
+							"    pm.expect(user.last_mod_time).to.be.at.most(new Date().toISOString(), \"Last modification time should not be in the future\");\r",
+							"  });\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "userapi@october",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "Numpy@gmail.com",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetbyUserId",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/user/9099",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"user",
+						"9099"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetUserbyUserfirstname",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/username/Rekha",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"users",
+						"username",
+						"Rekha"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteuserByUserid",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/deleteuser/7323",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"deleteuser",
+						"7323"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "userapi@october",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "Numpy@gmail.com",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://userserviceapp-f5a54828541b.herokuapp.com/uap"
+		}
+	]
+}
