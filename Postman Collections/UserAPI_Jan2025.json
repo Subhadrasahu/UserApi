@@ -1,0 +1,868 @@
+{
+	"info": {
+		"_postman_id": "d7c8c047-bff6-490f-a36d-cc291950f2e6",
+		"name": "UserAPI_JAN2025",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET_ALL_USERS",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6aec5db0-5283-4542-aaa9-94423adeb546",
+						"exec": [
+							"var GetAlluserSchema={\r",
+							"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+							"  \"title\": \"Generated schema for Root\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"user_first_name\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"user_last_name\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"user_contact_number\": {\r",
+							"      \"type\": \"number\"\r",
+							"    },\r",
+							"    \"user_email_id\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"userAddress\": {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"plotNumber\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"street\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"state\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"country\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"zipCode\": {\r",
+							"          \"type\": \"number\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"plotNumber\",\r",
+							"        \"street\",\r",
+							"        \"state\",\r",
+							"        \"country\",\r",
+							"        \"zipCode\"\r",
+							"      ]\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"user_first_name\",\r",
+							"    \"user_last_name\",\r",
+							"    \"user_contact_number\",\r",
+							"    \"user_email_id\",\r",
+							"    \"userAddress\"\r",
+							"  ]\r",
+							"}\r",
+							"if(pm.response.code === 200){\r",
+							"  pm.test(\"GetAllUsers Schema Validation\", function () {\r",
+							"    pm.expect(pm.response.json()).to.have.jsonSchema(GetAlluserSchema);\r",
+							"  });\r",
+							"\r",
+							"  pm.test(\"Content-Type-Validation\", function () {\r",
+							"    pm.response.to.have.header('Content-Type', 'application/json');\r",
+							"  });\r",
+							"\r",
+							"  pm.test(\"Data Type Validation -- GET ALL Users\", function () {\r",
+							"    const result = pm.response.json();  // Parse the JSON response\r",
+							"\r",
+							"    // Check if the array is not empty\r",
+							"    pm.expect(result.length).to.be.greaterThan(0);\r",
+							"  });\r",
+							"\r",
+							"  pm.test(\"StatusCodeValidation\", function () {\r",
+							"    const expStatusCode = pm.variables.get('expectedStatusCode');\r",
+							"    pm.response.to.have.status(expStatusCode);\r",
+							"  });\r",
+							"\r",
+							"  if (pm.response.code === 404) {\r",
+							"    var responseMessage = pm.response.text();\r",
+							"    var possibleMessages = [\r",
+							"      'Invalid endpoint',\r",
+							"      'Invalid url',\r",
+							"      'Application Error'\r",
+							"    ];\r",
+							"\r",
+							"    var messageFound = possibleMessages.some(msg => responseMessage.includes(msg));\r",
+							"    console.log(messageFound);\r",
+							"    pm.expect(messageFound).to.be.true;\r",
+							"  }\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "133aba33-8522-419b-944d-efcee3e41eb0",
+						"exec": [
+							"var method=pm.variables.get('method');\r",
+							"pm.variables.set('METHOD',method);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "8cd693e6-269c-4368-8f42-cb75764629c3",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "{{METHOD}}",
+				"header": [],
+				"url": "{{baseURL}}{{endpoint}}"
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE_USER_BY_USERID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6aec5db0-5283-4542-aaa9-94423adeb546",
+						"exec": [
+							"\r",
+							"pm.test(\"StatusCodeValidation\", function () {\r",
+							" const expStatusCode = pm.variables.get('expectedStatusCode');\r",
+							"    pm.response.to.have.status(expStatusCode);    \r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validate Response Message\", function () {   \r",
+							"var user_id = pm.variables.get(\"user_id\");\r",
+							"var responseMessage = pm.response.text();   \r",
+							"\r",
+							" if(pm.response.code === 200){     \r",
+							"    var expectedMessage = ` User id -${user_id} is deleted Successfully!`;\r",
+							"    console.log('expectedMessage ::'+expectedMessage);\r",
+							" //pm.expect(responseMessage.to.include(expectedMessage));\r",
+							"  // Check if one of the possible error messages is included in the response\r",
+							"        var possibleMessages = [\r",
+							"                        expectedMessage\r",
+							"        ];\r",
+							"       // Assert that one of the possible messages is in the response\r",
+							"        var messageFound = possibleMessages.some(msg => responseMessage.includes(msg));       \r",
+							"       pm.expect(messageFound).to.be.true;\r",
+							"\r",
+							" }\r",
+							"\r",
+							"else if(pm.response.code === 404) {           \r",
+							"        var expectedMessage = `Record with user id  ${user_id} already deleted and is Inactive`;             \r",
+							"\r",
+							"        // Check if one of the possible error messages is included in the response\r",
+							"        var possibleMessages = [\r",
+							"            pm.variables.get('message'), \r",
+							"             'Invalid endpoint',\r",
+							"            'no record found with',\r",
+							"            'Application Error',\r",
+							"            expectedMessage\r",
+							"        ];\r",
+							"\r",
+							"        // Assert that one of the possible messages is in the response\r",
+							"        var messageFound = possibleMessages.some(msg => responseMessage.includes(msg));       \r",
+							"       pm.expect(messageFound).to.be.true;\r",
+							"    }\r",
+							"\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "133aba33-8522-419b-944d-efcee3e41eb0",
+						"exec": [
+							"var method=pm.variables.get('method');\r",
+							"pm.variables.set('METHOD',method);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "ca1f6b83-0366-4e99-b2e8-51df9a16d926",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "{{METHOD}}",
+				"header": [],
+				"url": "{{baseURL}}{{endpoint}}"
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE_USER_BY_USER_FIRSTNAME",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6aec5db0-5283-4542-aaa9-94423adeb546",
+						"exec": [
+							"\r",
+							"pm.test(\"StatusCodeValidation\", function () {\r",
+							" const expStatusCode = pm.variables.get('expectedStatusCode');\r",
+							"    pm.response.to.have.status(expStatusCode);    \r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validate Response Message\", function () {   \r",
+							"var user_id = pm.variables.get(\"user_id\");\r",
+							"var responseMessage = pm.response.text();   \r",
+							"\r",
+							" if(pm.response.code === 200){     \r",
+							"    var expectedMessage = ` User id -${user_id} is deleted Successfully!`;\r",
+							"    console.log('expectedMessage ::'+expectedMessage);\r",
+							" //pm.expect(responseMessage.to.include(expectedMessage));\r",
+							"  // Check if one of the possible error messages is included in the response\r",
+							"        var possibleMessages = [\r",
+							"                        expectedMessage\r",
+							"        ];\r",
+							"       // Assert that one of the possible messages is in the response\r",
+							"        var messageFound = possibleMessages.some(msg => responseMessage.includes(msg));       \r",
+							"       pm.expect(messageFound).to.be.true;\r",
+							"\r",
+							" }\r",
+							"\r",
+							"else if(pm.response.code === 404) {           \r",
+							"        var expectedMessage = `Record with user id  ${user_id} already deleted and is Inactive`;             \r",
+							"\r",
+							"        // Check if one of the possible error messages is included in the response\r",
+							"        var possibleMessages = [\r",
+							"            pm.variables.get('message'), \r",
+							"             'Invalid endpoint',\r",
+							"            'no record found with',\r",
+							"            'Application Error',\r",
+							"            expectedMessage\r",
+							"        ];\r",
+							"\r",
+							"        // Assert that one of the possible messages is in the response\r",
+							"        var messageFound = possibleMessages.some(msg => responseMessage.includes(msg));       \r",
+							"       pm.expect(messageFound).to.be.true;\r",
+							"    }\r",
+							"\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "133aba33-8522-419b-944d-efcee3e41eb0",
+						"exec": [
+							"var method=pm.variables.get('method');\r",
+							"pm.variables.set('METHOD',method);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "fb9fc84a-d080-4a57-a95b-3468000d8d1f",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "{{METHOD}}",
+				"header": [],
+				"url": "{{baseURL}}{{endpoint}}"
+			},
+			"response": []
+		},
+		{
+			"name": "GET_USER_BY_USERID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6aec5db0-5283-4542-aaa9-94423adeb546",
+						"exec": [
+							"var GetAlluserSchema={\r",
+							"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+							"  \"title\": \"Generated schema for Root\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"user_first_name\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"user_last_name\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"user_contact_number\": {\r",
+							"      \"type\": \"number\"\r",
+							"    },\r",
+							"    \"user_email_id\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"userAddress\": {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"plotNumber\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"street\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"state\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"country\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"zipCode\": {\r",
+							"          \"type\": \"number\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"plotNumber\",\r",
+							"        \"street\",\r",
+							"        \"state\",\r",
+							"        \"country\",\r",
+							"        \"zipCode\"\r",
+							"      ]\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"user_first_name\",\r",
+							"    \"user_last_name\",\r",
+							"    \"user_contact_number\",\r",
+							"    \"user_email_id\",\r",
+							"    \"userAddress\"\r",
+							"  ]\r",
+							"}\r",
+							"if(pm.response.code === 200){\r",
+							"  pm.test(\"GetAllUsers Schema Validation\", function () {\r",
+							"    pm.expect(pm.response.json()).to.have.jsonSchema(GetAlluserSchema);\r",
+							"  });\r",
+							"\r",
+							"  pm.test(\"Content-Type-Validation\", function () {\r",
+							"    pm.response.to.have.header('Content-Type', 'application/json');\r",
+							"  });\r",
+							"\r",
+							"  pm.test(\"Data Type Validation -- GET ALL Users\", function () {\r",
+							"    const result = pm.response.json();  // Parse the JSON response\r",
+							"\r",
+							"    // Check if the array is not empty\r",
+							"    pm.expect(result.length).to.be.greaterThan(0);\r",
+							"  });\r",
+							"\r",
+							"  pm.test(\"StatusCodeValidation\", function () {\r",
+							"    const expStatusCode = pm.variables.get('expectedStatusCode');\r",
+							"    pm.response.to.have.status(expStatusCode);\r",
+							"  });\r",
+							"\r",
+							"  if (pm.response.code === 404) {\r",
+							"    var responseMessage = pm.response.text();\r",
+							"    var possibleMessages = [\r",
+							"      'Invalid endpoint',\r",
+							"      'Invalid url',\r",
+							"      'Application Error'\r",
+							"    ];\r",
+							"\r",
+							"    var messageFound = possibleMessages.some(msg => responseMessage.includes(msg));\r",
+							"    console.log(messageFound);\r",
+							"    pm.expect(messageFound).to.be.true;\r",
+							"  }\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "133aba33-8522-419b-944d-efcee3e41eb0",
+						"exec": [
+							"var method=pm.variables.get('method');\r",
+							"pm.variables.set('METHOD',method);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "236d2056-baae-4db1-b5b9-88d96fbd2254",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "{{METHOD}}",
+				"header": [],
+				"url": "{{baseURL}}{{endpoint}}"
+			},
+			"response": []
+		},
+		{
+			"name": "GET_USER_BY_USER_FIRSTNAME",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6aec5db0-5283-4542-aaa9-94423adeb546",
+						"exec": [
+							"var GetAlluserSchema={\r",
+							"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+							"  \"title\": \"Generated schema for Root\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"user_first_name\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"user_last_name\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"user_contact_number\": {\r",
+							"      \"type\": \"number\"\r",
+							"    },\r",
+							"    \"user_email_id\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"userAddress\": {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"plotNumber\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"street\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"state\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"country\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"zipCode\": {\r",
+							"          \"type\": \"number\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"plotNumber\",\r",
+							"        \"street\",\r",
+							"        \"state\",\r",
+							"        \"country\",\r",
+							"        \"zipCode\"\r",
+							"      ]\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"user_first_name\",\r",
+							"    \"user_last_name\",\r",
+							"    \"user_contact_number\",\r",
+							"    \"user_email_id\",\r",
+							"    \"userAddress\"\r",
+							"  ]\r",
+							"}\r",
+							"if(pm.response.code === 200){\r",
+							"  pm.test(\"GetAllUsers Schema Validation\", function () {\r",
+							"    pm.expect(pm.response.json()).to.have.jsonSchema(GetAlluserSchema);\r",
+							"  });\r",
+							"\r",
+							"  pm.test(\"Content-Type-Validation\", function () {\r",
+							"    pm.response.to.have.header('Content-Type', 'application/json');\r",
+							"  });\r",
+							"\r",
+							"  pm.test(\"Data Type Validation -- GET ALL Users\", function () {\r",
+							"    const result = pm.response.json();  // Parse the JSON response\r",
+							"\r",
+							"    // Check if the array is not empty\r",
+							"    pm.expect(result.length).to.be.greaterThan(0);\r",
+							"  });\r",
+							"\r",
+							"  pm.test(\"StatusCodeValidation\", function () {\r",
+							"    const expStatusCode = pm.variables.get('expectedStatusCode');\r",
+							"    pm.response.to.have.status(expStatusCode);\r",
+							"  });\r",
+							"\r",
+							"  if (pm.response.code === 404) {\r",
+							"    var responseMessage = pm.response.text();\r",
+							"    var possibleMessages = [\r",
+							"      'Invalid endpoint',\r",
+							"      'Invalid url',\r",
+							"      'Application Error'\r",
+							"    ];\r",
+							"\r",
+							"    var messageFound = possibleMessages.some(msg => responseMessage.includes(msg));\r",
+							"    console.log(messageFound);\r",
+							"    pm.expect(messageFound).to.be.true;\r",
+							"  }\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "133aba33-8522-419b-944d-efcee3e41eb0",
+						"exec": [
+							"var method=pm.variables.get('method');\r",
+							"pm.variables.set('METHOD',method);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "885b7362-b714-4bf6-b77e-f800ee359bee",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "{{METHOD}}",
+				"header": [],
+				"url": "{{baseURL}}{{endpoint}}"
+			},
+			"response": []
+		},
+		{
+			"name": "POST_USER",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "69a09448-399d-42c0-ab45-45294db19488",
+						"exec": [
+							"var CreateUserSchema={\r",
+							"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+							"  \"title\": \"Generated schema for Root\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"user_first_name\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"user_last_name\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"user_contact_number\": {\r",
+							"      \"type\": \"number\"\r",
+							"    },\r",
+							"    \"user_email_id\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"userAddress\": {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"plotNumber\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"street\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"state\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"country\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"zipCode\": {\r",
+							"          \"type\": \"number\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"plotNumber\",\r",
+							"        \"street\",\r",
+							"        \"state\",\r",
+							"        \"country\",\r",
+							"        \"zipCode\"\r",
+							"      ]\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"user_first_name\",\r",
+							"    \"user_last_name\",\r",
+							"    \"user_contact_number\",\r",
+							"    \"user_email_id\",\r",
+							"    \"userAddress\"\r",
+							"  ]\r",
+							"}\r",
+							"  \r",
+							"if (pm.response.code != 201) {\r",
+							"pm.test(\"StatusCodeValidation\", function () {\r",
+							" const expStatusCode = pm.variables.get('expectedStatusCode');\r",
+							"    pm.response.to.have.status(expStatusCode);\r",
+							"});\r",
+							"pm.test(\"ResponseMessage Validation\", function () { \r",
+							"    const result = pm.response.json();  \r",
+							"var Actualmesg=result.success;\r",
+							"var expStstusmesg= pm.variables.get('ResponseMessage');\r",
+							" pm.expect(Actualmesg).to.eql(expStstusmesg); \r",
+							"    \r",
+							"});\r",
+							"\r",
+							"}\r",
+							"\r",
+							"const result = JSON.parse(responseBody)\r",
+							"console.log(\"user_name:\"+ result.user_first_name  + result.user_last_name);\r",
+							"\r",
+							"if(pm.response.code ===201)\r",
+							"{\r",
+							"    \r",
+							"pm.test(\"Data Type Valiadtion-- \", () => {\r",
+							"const response = pm.response.json();\r",
+							"    // user_first_name \r",
+							"     pm.expect(response.user_first_name).to.be.a('string');\r",
+							"     //user_last_name\r",
+							"    pm.expect(response.user_last_name).to.be.a('string');\r",
+							"    \r",
+							"    // user_contact_number \r",
+							"    pm.expect(response.user_contact_number).to.be.a('number');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Schema Validation-- \", () => {\r",
+							"    pm.response.to.have.jsonSchema(CreateUserSchema);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"StatusCodeValidation\", function () {\r",
+							" const expStatusCode = pm.variables.get('expectedStatusCode');\r",
+							"    pm.response.to.have.status(expStatusCode);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type-Validation\",function () {\r",
+							"    pm.response.to.have.header('Content-Type', 'application/json');\r",
+							"});\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "8ba487aa-5b0e-44b4-a2cb-f8bd4f43bd3d",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "{{METHOD}}",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"user_first_name\":  \"{{user_first_name}}\",\r\n \"user_last_name\":  \"{{user_last_name}}\",        \r\n \"user_contact_number\": \"{{user_contact_number}}\",   \r\n \"user_email_id\": \"{{user_email_id}}\",\r\n\r\n\"userAddress\": {\r\n   \"plotNumber\": \"{{plotNumber}}\",\r\n   \"street\": \"{{street}}\",\r\n   \"state\": \"{{state}}\",\r\n    \"country\": \"{{country}}\",\r\n   \"zipCode\": \"{{zipCode}}\"\r\n }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{baseURL}}{{endpoint}}"
+			},
+			"response": []
+		},
+		{
+			"name": "PUT_USER",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "69a09448-399d-42c0-ab45-45294db19488",
+						"exec": [
+							"var CreateUserSchema={\r",
+							"  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\r",
+							"  \"title\": \"Generated schema for Root\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"user_first_name\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"user_last_name\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"user_contact_number\": {\r",
+							"      \"type\": \"number\"\r",
+							"    },\r",
+							"    \"user_email_id\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"userAddress\": {\r",
+							"      \"type\": \"object\",\r",
+							"      \"properties\": {\r",
+							"        \"plotNumber\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"street\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"state\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"country\": {\r",
+							"          \"type\": \"string\"\r",
+							"        },\r",
+							"        \"zipCode\": {\r",
+							"          \"type\": \"number\"\r",
+							"        }\r",
+							"      },\r",
+							"      \"required\": [\r",
+							"        \"plotNumber\",\r",
+							"        \"street\",\r",
+							"        \"state\",\r",
+							"        \"country\",\r",
+							"        \"zipCode\"\r",
+							"      ]\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"user_first_name\",\r",
+							"    \"user_last_name\",\r",
+							"    \"user_contact_number\",\r",
+							"    \"user_email_id\",\r",
+							"    \"userAddress\"\r",
+							"  ]\r",
+							"}\r",
+							"  \r",
+							"if (pm.response.code != 200) {\r",
+							"pm.test(\"StatusCodeValidation\", function () {\r",
+							" const expStatusCode = pm.variables.get('expectedStatusCode');\r",
+							"    pm.response.to.have.status(expStatusCode);\r",
+							"});\r",
+							"pm.test(\"ResponseMessage Validation\", function () { \r",
+							"    const result = pm.response.json();  \r",
+							"var Actualmesg=result.success;\r",
+							"var expStstusmesg= pm.variables.get('ResponseMessage');\r",
+							" pm.expect(Actualmesg).to.eql(expStstusmesg); \r",
+							"    \r",
+							"});\r",
+							"\r",
+							"}\r",
+							"\r",
+							"const result = JSON.parse(responseBody)\r",
+							"console.log(\"user_name:\"+ result.user_first_name  + result.user_last_name);\r",
+							"\r",
+							"if(pm.response.code ===200)\r",
+							"{\r",
+							"    \r",
+							"pm.test(\"Data Type Valiadtion-- \", () => {\r",
+							"const response = pm.response.json();\r",
+							"    // user_first_name \r",
+							"     pm.expect(response.user_first_name).to.be.a('string');\r",
+							"     //user_last_name\r",
+							"    pm.expect(response.user_last_name).to.be.a('string');\r",
+							"    \r",
+							"    // user_contact_number \r",
+							"    pm.expect(response.user_contact_number).to.be.a('number');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Schema Validation-- \", () => {\r",
+							"    pm.response.to.have.jsonSchema(CreateUserSchema);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"StatusCodeValidation\", function () {\r",
+							" const expStatusCode = pm.variables.get('expectedStatusCode');\r",
+							"    pm.response.to.have.status(expStatusCode);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type-Validation\",function () {\r",
+							"    pm.response.to.have.header('Content-Type', 'application/json');\r",
+							"});\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "bfb941b7-1282-41f5-8162-952a216b1a03",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "{{METHOD}}",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n\"user_first_name\":  \"{{user_first_name}}\",\r\n \"user_last_name\":  \"{{user_last_name}}\",        \r\n \"user_contact_number\": \"{{user_contact_number}}\",   \r\n \"user_email_id\": \"{{user_email_id}}\",\r\n\r\n\"userAddress\": {\r\n   \"plotNumber\": \"{{plotNumber}}\",\r\n   \"street\": \"{{street}}\",\r\n   \"state\": \"{{state}}\",\r\n    \"country\": \"{{country}}\",\r\n   \"zipCode\": \"{{zipCode}}\"\r\n }\r\n}\r\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{baseURL}}{{endpoint}}"
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": {
+			"password": "{{password}}",
+			"username": "{{username}}"
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "121bc718-01fc-4bb3-a1e4-38cd03bc0312",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					"var method = pm.variables.get('method')\r",
+					"pm.variables.set('METHOD',method)"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "5dc0ae1d-1ba6-4202-af73-7b5183d1b98b",
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "username",
+			"value": "Numpy@gmail.com",
+			"type": "default"
+		},
+		{
+			"key": "password",
+			"value": "userapi@2025",
+			"type": "default"
+		},
+		{
+			"key": "baseURL",
+			"value": "https://userserviceapp-f5a54828541b.herokuapp.com/uap",
+			"type": "string"
+		},
+		{
+			"key": "GetAllUsers_endpoint",
+			"value": "/users",
+			"type": "string"
+		}
+	]
+}
